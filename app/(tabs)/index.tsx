@@ -7,6 +7,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -18,10 +19,12 @@ const blurhash =
 
 export default function IndexScreen() {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
 
   useEffect(() => {
     const showSub = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
+      setTooltipVisible(false);
     });
 
     const hideSub = Keyboard.addListener('keyboardDidHide', () => {
@@ -33,6 +36,10 @@ export default function IndexScreen() {
       hideSub.remove();
     };
   }, []);
+
+  const toggleTooltip = () => {
+    setTooltipVisible((prev) => !prev);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -49,9 +56,7 @@ export default function IndexScreen() {
       >
         <Image
           source={require('../../assets/brand/automato_wireframe-whiee_bg-not.png')}
-          style={[
-            styles.image,
-          ]}
+          style={styles.image}
           placeholder={{ blurhash }}
           contentFit="cover"
           transition={1000}
@@ -67,11 +72,32 @@ export default function IndexScreen() {
         ]}
       >
         <View style={styles.placeholderRow}>
-          <View style={styles.side}>
-            <Ionicons name="sparkles" size={20} color="black" />
+          <View style={styles.sideWrapper}>
+            {tooltipVisible && !keyboardVisible && (
+              <View style={styles.tooltip}>
+                <View style={styles.tooltipContent}>
+                  <Pressable style={styles.tooltipItem}>
+                    <Text style={styles.tooltipText}>Windows 11</Text>
+                  </Pressable>
+
+                  <Pressable style={styles.tooltipItem}>
+                    <Text style={styles.tooltipText}>Linux</Text>
+                  </Pressable>
+
+                  <Pressable style={styles.tooltipItem}>
+                    <Text style={styles.tooltipText}>Comando rápido</Text>
+                  </Pressable>
+                </View>
+
+                <View style={styles.tooltipArrow} />
+              </View>
+            )}
+
+            <Pressable style={styles.side} onPress={toggleTooltip}>
+              <Ionicons name="sparkles" size={20} color="black" />
+            </Pressable>
           </View>
 
-          {/* Teclado */}
           <View style={styles.placeholderCenter}>
             <TextInput
               style={[
@@ -80,6 +106,7 @@ export default function IndexScreen() {
               ]}
               placeholder="Digite aqui"
               placeholderTextColor="#000000"
+              onFocus={() => setTooltipVisible(false)}
             />
           </View>
 
@@ -124,12 +151,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
 
-  imageKeyboardOpen: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-  },
-
   contentInput: {
     marginHorizontal: 30,
     marginBottom: 20,
@@ -152,6 +173,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  sideWrapper: {
+    position: 'relative',
+    width: 44,
+    height: 44,
+    marginRight: 12,
+  },
+
   side: {
     width: 44,
     height: 44,
@@ -159,6 +187,49 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#D3FFF3',
     borderRadius: 10,
+  },
+
+  tooltip: {
+    position: 'absolute',
+    bottom: 54,
+    left: -8,
+    width: 170,
+    alignItems: 'flex-start',
+    zIndex: 50,
+  },
+
+  tooltipContent: {
+    width: '100%',
+    backgroundColor: '#102348',
+    borderRadius: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+  },
+
+  tooltipItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+  },
+
+  tooltipText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+
+  tooltipArrow: {
+    marginLeft: 18,
+    width: 12,
+    height: 12,
+    backgroundColor: '#102348',
+    transform: [{ rotate: '45deg' }],
+    marginTop: -6,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
   },
 
   placeholderCenter: {
