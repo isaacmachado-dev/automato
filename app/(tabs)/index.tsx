@@ -1,98 +1,181 @@
+import TopBar from '@/components/TopBar';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const blurhash =
+  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
-export default function HomeScreen() {
+export default function IndexScreen() {
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <KeyboardAvoidingView
+      style={styles.screen}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <TopBar title="Automato" />
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <View
+        style={[
+          styles.content,
+          keyboardVisible && styles.contentKeyboardOpen,
+        ]}
+      >
+        <Image
+          source={require('../../assets/brand/automato_wireframe-whiee_bg-not.png')}
+          style={[
+            styles.image,
+          ]}
+          placeholder={{ blurhash }}
+          contentFit="cover"
+          transition={1000}
+        />
+
+        <Text style={styles.text}>Olá, Isaac.</Text>
+      </View>
+
+      <View
+        style={[
+          styles.contentInput,
+          keyboardVisible && styles.contentInputExpanded,
+        ]}
+      >
+        <View style={styles.placeholderRow}>
+          <View style={styles.side}>
+            <Ionicons name="sparkles" size={20} color="black" />
+          </View>
+
+          {/* Teclado */}
+          <View style={styles.placeholderCenter}>
+            <TextInput
+              style={[
+                styles.placeholderText,
+                keyboardVisible && styles.placeholderTextExpanded,
+              ]}
+              placeholder="Digite aqui"
+              placeholderTextColor="#000000"
+            />
+          </View>
+
+          <View style={styles.side}>
+            <FontAwesome5 name="microphone" size={20} color="black" />
+          </View>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  screen: {
+    flex: 1,
+    backgroundColor: '#000819',
+  },
+
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+
+  contentKeyboardOpen: {
+    justifyContent: 'flex-end',
+    paddingBottom: 20,
+  },
+
+  text: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+  },
+
+  imageKeyboardOpen: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+
+  contentInput: {
+    marginHorizontal: 30,
+    marginBottom: 20,
+    backgroundColor: '#AFBBF2',
+    borderRadius: 20,
+    paddingVertical: 18,
+    paddingHorizontal: 16,
+  },
+
+  contentInputExpanded: {
+    marginHorizontal: 10,
+    marginBottom: 10,
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+  },
+
+  placeholderRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+
+  side: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D3FFF3',
+    borderRadius: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+
+  placeholderCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+
+  placeholderText: {
+    width: '100%',
+    fontSize: 16,
+    color: '#000000',
+    textAlign: 'center',
+  },
+
+  placeholderTextExpanded: {
+    textAlign: 'left',
   },
 });
