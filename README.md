@@ -1,6 +1,9 @@
-# Welcome to your Expo app 👋
+# Automato
+> This its an mobile app with React Native for control the computer and AI locally runs
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+<div align="center">
+  <img src="https://img.shields.io/badge/In%20Development-%23C63E3E" alt="Status">
+</div>
 
 ## Get started
 
